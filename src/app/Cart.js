@@ -1,63 +1,39 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Toolbar from '../components/Toolbar'
+import { ArrowLeft2, Trash } from 'iconsax-react-native'
+import RenderItemCart from '../components/RenderItemCart'
+import { useSelector } from 'react-redux'
 
 const Cart = props => {
     const { navigation } = props
+    const { account } = useSelector(state => state.account)
+    console.log(account);
+    useEffect(() => {
+    }, [])
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
             <Toolbar
                 title="Giỏ hàng"
-                left={require('../../assets/image/chevron-left.png')}
+                left={<ArrowLeft2 color='#000' />}
                 fnLeft={() => navigation.goBack()}
-                right={require('../../assets/image/trash-can.png')} />
+                right={<Trash color='#000' />} />
 
             <View style={{ flex: 1 }}>
-                {data.length === 0 && <Text style={{ textAlign: 'center', marginTop: 20 }}>Không có sản phẩm nào trong giỏ hàng</Text>}
+                {account?.cart.length === 0 && <Text style={styles.lableNone}>Không có sản phẩm nào trong giỏ hàng</Text>}
                 <FlatList
-                    data={data}
+                    data={account?.cart}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15, flex: 1 }}>
-                            <TouchableOpacity>
-                                <Image source={require('../../assets/image/unChoose.png')} />
-                            </TouchableOpacity>
-                            <Image style={{ width: 77, height: 77, }} resizeMode='contain' source={require('../../assets/image/image.png')} />
-                            <View style={{ justifyContent: 'space-between', flexDirection: 'column', flex: 1 }}>
-                                <View>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 16, fontStyle: 'normal', fontWeight: '500', lineHeight: 22 }}>{item.name} | </Text>
-                                        <Text style={{ fontSize: 14, fontStyle: 'normal', fontWeight: '400', lineHeight: 20 }}>{item.attributes}</Text>
-                                    </View>
-                                    <Text style={{ fontSize: 16, fontStyle: 'normal', fontWeight: '500', lineHeight: 22, color: '#007537' }}>250.000đ</Text>
-                                </View>
-                                {/*  */}
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity>
-                                            <Image style={{ width: 20, height: 20 }} source={require('../../assets/image/minus-square.png')} />
-                                        </TouchableOpacity>
-                                        <Text style={{ fontSize: 16, fontStyle: 'normal', fontWeight: '400', lineHeight: 22, marginHorizontal: 10 }}>{item.quantity}</Text>
-                                        <TouchableOpacity>
-                                            <Image style={{ width: 20, height: 20 }} source={require('../../assets/image/plus-square.png')} />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <TouchableOpacity>
-                                        <Text style={{ fontSize: 16, fontStyle: 'normal', fontWeight: '500', lineHeight: 20, textDecorationLine: 'underline' }}>Xoá</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    )} />
+                    keyExtractor={item => item.product_id?._id}
+                    renderItem={({ item }) => <RenderItemCart item={item} />} />
             </View>
             <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
-                    <Text style={{ fontSize: 14, fontStyle: 'normal', fontWeight: '400', lineHeight: 20 }}>Tạm tính: </Text>
-                    <Text style={{ fontSize: 16, fontStyle: 'normal', fontWeight: '500', lineHeight: 22, }}>222.333đ</Text>
+                <View style={styles.lableContainer}>
+                    <Text style={styles.lableNameValue}>Tạm tính: </Text>
+                    <Text style={styles.lableValue}>222.333đ</Text>
                 </View>
-                <TouchableOpacity style={{ backgroundColor: '#007537', borderRadius: 8, padding: 15, flexDirection: 'row', paddingHorizontal: 30, paddingVertical: 20, justifyContent: "space-between", marginHorizontal: 20, marginBottom: 20 }}>
-                    <Text style={{ fontSize: 18, fontStyle: 'normal', fontWeight: '500', lineHeight: 22, color: 'white' }}>Tiến hành thanh toán</Text>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Payment')}>
+                    <Text style={styles.buttonLable}>Tiến hành thanh toán</Text>
                     <Image source={require('../../assets/image/chevron-right.png')} />
                 </TouchableOpacity>
             </View>
@@ -68,17 +44,50 @@ const Cart = props => {
 
 export default Cart
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    button: {
+        backgroundColor: '#007537',
+        borderRadius: 8,
+        padding: 15,
+        flexDirection: 'row',
+        paddingHorizontal: 30,
+        paddingVertical: 20,
+        justifyContent: "space-between",
+        marginHorizontal: 20,
+        marginBottom: 20
+    },
+    buttonLable: {
+        fontSize: 18,
+        fontStyle: 'normal',
+        fontWeight: '500',
+        lineHeight: 22,
+        color: 'white'
+    },
+    lableValue: {
+        fontSize: 16,
+        fontStyle: 'normal',
+        fontWeight: '500',
+        lineHeight: 22,
+    },
+    lableNameValue: {
+        fontSize: 16,
+        fontStyle: 'normal',
+        fontWeight: '400',
+        lineHeight: 20,
+    },
+    lableContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 15
+    },
+    container: {
+        flex: 1,
+    },
+    lableNone: {
+        textAlign: 'center',
+        marginTop: 20
+    }
+
+})
 
 
-
-const data = [
-    { id: 1, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 2, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 3, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 4, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 5, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 6, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 7, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' },
-    { id: 8, name: 'Spider Plant', quantity: 1, attributes: 'Ưa bóng' }
-]

@@ -1,18 +1,47 @@
 import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import TextInputCP from '../components/TextInputCP';
+import { useDispatch } from 'react-redux';
+import { APIRegister } from '../api/UserAPI';
 
 const Register = props => {
     const { navigation } = props;
-    const [eye, setEye] = useState(true);
     const [name, setName] = useState('')
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
+    const [message, setMessage] = useState('');
 
-    const imageEye = eye ? require('../../assets/image/eye-invisible-filled.png') : require('../../assets/image/eye-filled.png');
-    function handleEye() {
-        setEye(!eye);
+
+    async function handleRegister() {
+        try {
+            if (name == '' || email == '' || phone == '' || password == '') {
+                setMessage('Vui lòng nhập đầy đủ thông tin');
+                return;
+            } else {
+                setMessage('');
+                const body = {
+                    username: name,
+                    email: email,
+                    phone: phone,
+                    password: password
+                }
+                console.log(body);
+                const res = await dispatch(APIRegister(body));
+                console.log(res.payload);
+                if (res.payload.status == true) {
+                    // navigation.navigate('Login');
+                    setMessage('Đăng Ký Thành Công');
+                } else {
+                    setMessage('Email hoặc số điện thoại đã tồn tại');
+                    return;
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            alert('Đã có lỗi xảy ra');
+        }
     }
     return (
         <View style={styles.container}>
@@ -28,8 +57,9 @@ const Register = props => {
                         <TextInputCP placeholder='Email' fn={setEmail} value={email} />
                         <TextInputCP placeholder='Số điện thoại' fn={setPhone} value={phone} />
                         <TextInputCP placeholder='Mật khẩu' password fn={setPassword} value={password} />
+                        {message != '' && <Text style={{ color: 'red', textAlign: 'center' }}>{message}</Text>}
                         <Text style={styles.labelTerm}>Để đăng ký tài khoản, bạn đồng ý <Text style={styles.colorLabel}>Term & Conditions</Text> and <Text style={styles.colorLabel}>Privacy Policy</Text></Text>
-                        <TouchableOpacity style={{ backgroundColor: '#009245', padding: 10, borderRadius: 15, alignItems: 'center', marginTop: 20 }}>
+                        <TouchableOpacity onPress={handleRegister} style={{ backgroundColor: '#009245', padding: 10, borderRadius: 15, alignItems: 'center', marginTop: 20 }}>
                             <Text style={{ color: 'white', fontSize: 18, fontWeight: '500' }}>Đăng ký</Text>
                         </TouchableOpacity>
                         <View>
@@ -49,7 +79,7 @@ const Register = props => {
                         </View>
                         <View style={{ marginTop: 7, flexDirection: 'row', justifyContent: 'center' }}>
                             <Text style={styles.labelRemember}>Bạn đã có tài khoản?  </Text>
-                            <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                                 <Text style={[styles.labelRemember, { color: '#009245' }]}>Đăng nhập</Text>
                             </TouchableOpacity>
                         </View>

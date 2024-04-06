@@ -1,23 +1,19 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native'
+import { StyleSheet, SafeAreaView, StatusBar } from 'react-native'
 import React from 'react'
-import Login from './src/auth/Login'
-import Register from './src/auth/Register'
-import Home from './src/app/Home'
-import Details from './src/app/Details'
-import ListProducts from './src/app/ListProducts'
-import Cart from './src/app/Cart'
 import AppNavigation from './src/AppNavigation'
-import { AppProvider } from './src/AppContext'
+
+import { Provider } from 'react-redux'
+
+import Store from './src/redux/Store'
 
 const App = () => {
   return (
-    <AppProvider>
+    <Provider store={Store}>
       <SafeAreaView style={styles.container}>
         <StatusBar />
         <AppNavigation />
       </SafeAreaView>
-    </AppProvider>
-
+    </Provider>
   )
 }
 
@@ -26,6 +22,5 @@ export default App
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
   },
 })

@@ -1,18 +1,63 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState, } from 'react'
+import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import TextInputCP from '../components/TextInputCP';
+import { TickCircle } from 'iconsax-react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { APILogin } from '../api/UserAPI';
 
 const Login = props => {
   const { navigation } = props;
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('0986620991');
+  const [email, setEmail] = useState('0975091673');
   const [remember, setRemember] = useState(false);
-  const imageRemember = remember ? require('../../assets/image/ri_checkbox-circle-line.png') : require('../../assets/image/checkbox-circle-line.png');
-
+  const imageRemember = remember ? <TickCircle color='#009245' /> : <TickCircle color='#8B8B8B' />;
+  const [waiting, setWaiting] = useState(false);
+  const buttonColor = waiting ? '#8B8B8B' : '#009245';
+  const [message, setMessage] = useState('');
+  const dispatch = useDispatch();
+  const { account, accountStatus } = useSelector(state => state.account);
 
   function handleRemember() {
     setRemember(!remember);
   }
+
+  function handleLogin() {
+    setWaiting(true);
+    try {
+      if (email == '' || password == '') {
+        setMessage('Vui lòng nhập đầy đủ thông tin');
+        setWaiting(false);
+        return;
+      } else {
+        const body = {
+          username: email,
+          password: password
+        }
+        dispatch(APILogin(body));
+      }
+    } catch (err) {
+      console.log(err);
+      setMessage('Đã có lỗi xảy ra');
+    }
+  }
+  useEffect(() => {
+    if (accountStatus == 'loading') {
+      setWaiting(true);
+    }
+    if (accountStatus == 'success') {
+      if (account) {
+        navigation.navigate('HomeTab');
+        setMessage('');
+        setWaiting(false);
+      }
+    } else if (accountStatus == 'fail') {
+      setMessage('Sai tài khoản hoặc mật khẩu');
+      setWaiting(false);
+    }
+  }, [accountStatus, account]);
+
+
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView>
@@ -23,19 +68,20 @@ const Login = props => {
               <Text style={styles.largeTitle}>Chào Mừng Bạn</Text>
               <Text style={styles.body}>Đăng nhập tài khoản</Text>
             </View>
-            <TextInputCP placeholder='Email' fn={setEmail} value={email} />
+            <TextInputCP placeholder='Email hoặc Số điện thoại' fn={setEmail} value={email} />
             <TextInputCP placeholder='Mật khẩu' password fn={setPassword} value={password} />
+            {message != '' && <Text style={{ color: 'red', textAlign: 'center' }}>{message}</Text>}
             <View style={styles.viewRemember}>
               <TouchableOpacity style={[styles.viewRemember, styles.gap]} onPress={handleRemember}>
-                <Image source={imageRemember} />
+                {imageRemember}
                 <Text style={styles.labelRemember}>Nhớ tài khoản</Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Text style={[styles.labelRemember, { color: '#009245' }]}>Quên mật khẩu?</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={()=>navigation.navigate('HomeTab')} style={{ backgroundColor: '#009245', padding: 10, borderRadius: 15, alignItems: 'center', marginTop: 20, }}>
-              <Text style={{ color: 'white', fontSize: 18, fontWeight: '500', fontFamily: 'Poppins-Bold' }}>Đăng nhập</Text>
+            <TouchableOpacity onPress={handleLogin} disabled={waiting} style={{ backgroundColor: buttonColor, padding: 10, borderRadius: 15, alignItems: 'center', marginTop: 20, }}>
+              <Text style={{ color: 'white', fontSize: 18, fontWeight: '500', fontFamily: 'Poppins-Bold' }}>{waiting ? 'Đang xủ lí ...' : 'Đăng nhập'}</Text>
             </TouchableOpacity>
             <View>
               <View style={styles.hightLightView}>
@@ -48,13 +94,13 @@ const Login = props => {
                   <Image style={styles.icon} source={require('../../assets/image/icons_google.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Image style={styles.icon} source={require('../../assets/image/logos_facebook.png')} />
+                  <Image style={styles.icon} source={require('../../assets/image//logos_facebook.png')} />
                 </TouchableOpacity>
               </View>
             </View>
             <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
               <Text style={styles.labelRemember}>Bạn chưa có tài khoản? </Text>
-              <TouchableOpacity onPress={()=>navigation.navigate('Signup')}>
+              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <Text style={[styles.labelRemember, { color: '#009245' }]}>Đăng ký ngay</Text>
               </TouchableOpacity>
             </View>
@@ -124,3 +170,4 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 })
+

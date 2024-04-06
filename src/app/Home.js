@@ -1,18 +1,29 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect } from 'react'
 import ItemSection from '../components/ItemSection';
+import { ShoppingCart } from 'iconsax-react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { APICategoryWithProducts } from '../api/ProductsAPI';
+import { APIGetCategories } from '../api/CategoriesAPI';
+
 
 const Home = props => {
+    const { productsWithCategory } = useSelector(state => state.product);
     const { navigation } = props;
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(APICategoryWithProducts())
+        dispatch(APIGetCategories())
+    }, [])
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.header}>
                     <Text style={styles.headerLabel}>Planta - toả sáng {'\n'}không gian nhà bạn</Text>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Cart')}
+                        onPress={() => navigation.navigate('Cart',{})}
                         style={{ margin: 10, borderRadius: 50, backgroundColor: 'white', padding: 10 }}>
-                        <Image source={require('../../assets/image/shopping-cart.png')} />
+                        <ShoppingCart color='#000' />
                     </TouchableOpacity>
                 </View>
                 <View>
@@ -22,8 +33,11 @@ const Home = props => {
                         <Image source={require('../../assets/image/fi_arrow-right.png')} />
                     </TouchableOpacity>
                 </View>
-                <ItemSection fnMore={() => navigation.navigate('List')} data={data} fn={() => navigation.navigate('Details')} cateLabel='Cây nội thất' />
-                <ItemSection fnMore={()=>navigation.navigate('List')} data={data} fn={() => navigation.navigate('Details')} cateLabel='Cây ngoại thất' />
+                {productsWithCategory?.map((item, index) => {
+                    return (
+                        <ItemSection fnMore={() => navigation.navigate('List',{})} key={index} cateLabel={item.category} fn={()=>navigation.navigate('Details')} data={item.products} />
+                    )
+                })}
             </ScrollView>
         </View>
     )

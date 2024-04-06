@@ -1,10 +1,11 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { memo, useState } from 'react'
+import { Eye, EyeSlash } from 'iconsax-react-native';
 
 const TextInputCP = memo(props => {
     const { placeholder, password, fn, value } = props
     const [eye, setEye] = useState(password ? true : false);
-    const imageEye = eye ? require('../../assets/image/eye-invisible-filled.png') : require('../../assets/image/eye-filled.png');
+    const imageEye = eye ? <EyeSlash color='#8B8B8B' variant='Bold' /> : <Eye color='#8B8B8B' variant='Bold' />;
     function handleEye() {
         setEye(!eye);
     }
@@ -13,7 +14,8 @@ const TextInputCP = memo(props => {
             <View style={styles.textInput}>
                 <TextInput onChangeText={t => fn(t)} value={value} placeholder={placeholder} secureTextEntry={eye} />
                 {password && <TouchableOpacity onPress={handleEye} style={styles.eye}>
-                    <Image source={imageEye} />
+                    {/* <Image source={imageEye} /> */}
+                    {imageEye}
                 </TouchableOpacity>}
             </View>
         </View>
@@ -27,7 +29,8 @@ const styles = StyleSheet.create({
     eye: {
         position: 'absolute',
         right: 10,
-        top: 13,
+        top: 8,
+        padding: 5,
     },
     textInput: {
         marginVertical: 5,

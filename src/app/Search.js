@@ -1,16 +1,18 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Toolbar from '../components/Toolbar'
+import { Clock, SearchNormal1 } from 'iconsax-react-native'
 
 const Search = () => {
     return (
         <View style={styles.container}>
-            <Toolbar title="Tìm kiếm" left />
+            <Toolbar title="Tìm kiếm" />
             {/* text input để tìm kiếm */}
             <View style>
                 <TextInput placeholder="Tìm kiếm" style={styles.input} />
                 <TouchableOpacity style={styles.icon}>
-                    <Image source={require('../../assets/image/search.png')} />
+                    {/* <Image source={require('../../assets/image/search.png')} /> */}
+                    <SearchNormal1 color='#000' />
                 </TouchableOpacity>
             </View>
             {/* tìm kiếm gần đây */}
@@ -19,16 +21,16 @@ const Search = () => {
                 <View >
                     {dataSearch.map((item, index) => {
                         return (
-                            <TouchableOpacity key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 9 }}>
+                            <TouchableOpacity key={index} style={styles.searchContainer}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Image style={{ marginRight: 10 }} source={require('../../assets/image/clock.png')} />
+                                    {/* <Image style={{ marginRight: 10 }} source={require('../../assets/image/clock.png')} /> */}
+                                    <Clock color='#000' style={{ marginRight: 15 }} />
                                     <Text style={styles.labelRecent}>{item.name}</Text>
                                 </View>
                                 <TouchableOpacity>
                                     <Image source={require('../../assets/image/close.png')} />
                                 </TouchableOpacity>
                             </TouchableOpacity>
-
                         )
                     })}
                 </View>
@@ -43,6 +45,11 @@ const Search = () => {
 export default Search
 
 const styles = StyleSheet.create({
+    searchContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 9
+    },
     labelRecent: {
         fontSize: 16,
         fontStyle: 'normal',
