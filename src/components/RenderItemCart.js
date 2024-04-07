@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { memo, useState } from 'react'
 import { AddSquare, MinusSquare, Stop, TickSquare } from 'iconsax-react-native'
 
-const RenderItemCart = props => {
+const RenderItemCart = memo(props => {
     const { item, checkFn, minusFn, plusFn } = props
     const [isCheck, setisCheck] = useState(false)
     const formatPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.product_id?.price)
@@ -41,7 +41,7 @@ const RenderItemCart = props => {
             </View>
         </View>
     )
-}
+})
 
 export default RenderItemCart
 

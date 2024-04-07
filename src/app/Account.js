@@ -2,10 +2,12 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import React from 'react'
 import Toolbar from '../components/Toolbar'
 import ProfileSection from '../components/ProfileSection'
+import { useSelector } from 'react-redux';
 
 
 const Account = props => {
   const { navigation } = props;
+  const { account } = useSelector(state => state.account);
   function handleItemEx(item) {
     if (item.navigate == 'EditAccount') {
       navigation.navigate(item.navigate)
@@ -23,8 +25,8 @@ const Account = props => {
           <View style={styles.sectionInfomation}>
             <Image source={require('../../assets/image/avt.png')} style={styles.avatar} />
             <View style={styles.infoLabel}>
-              <Text style={styles.infoName}>John Doe</Text>
-              <Text style={styles.infoEmail}>example@example.com</Text>
+              <Text style={styles.infoName}>{account.username}</Text>
+              <Text style={styles.infoEmail}>{account.email}</Text>
             </View>
           </View>
           <ProfileSection

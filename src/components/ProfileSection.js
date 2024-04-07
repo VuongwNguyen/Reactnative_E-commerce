@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 
-const ProfileSection = props => {
+const ProfileSection = memo(props => {
     const { arr, title, fn } = props
     return (
         <View style={styles.container}>
@@ -14,7 +14,7 @@ const ProfileSection = props => {
             ))}
         </View>
     )
-}
+})
 
 export default ProfileSection
 

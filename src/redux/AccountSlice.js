@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { APILogin,APIinsertCart } from "../api/UserAPI";
+import { APILogin,APIinsertCart,APIUpdateUser} from "../api/UserAPI";
 
 
 const AccountSlice = createSlice({
@@ -41,7 +41,6 @@ const AccountSlice = createSlice({
         builder.addCase(APIinsertCart.fulfilled, (state, action) => {
             if (action.payload.status) {
                 state.account = action.payload?.user;
-                console.log('>>>>>>>',state.account);
                 state.accountStatus = 'success';
             } else {
                 state.account = action.payload;
@@ -49,6 +48,24 @@ const AccountSlice = createSlice({
             }
         });
         builder.addCase(APIinsertCart.rejected, (state, action) => {
+            state.account = action.payload;
+            state.accountStatus = 'fail';
+        });
+
+        builder.addCase(APIUpdateUser.pending, (state, action) => {
+            state.account = action.payload;
+            state.accountStatus = 'loading';
+        });
+        builder.addCase(APIUpdateUser.fulfilled, (state, action) => {
+            if (action.payload.status) {
+                state.account = action.payload?.user;
+                state.accountStatus = 'success';
+            } else {
+                state.account = action.payload;
+                state.accountStatus = 'fail';
+            }
+        });
+        builder.addCase(APIUpdateUser.rejected, (state, action) => {
             state.account = action.payload;
             state.accountStatus = 'fail';
         });

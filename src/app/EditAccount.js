@@ -1,28 +1,58 @@
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Toolbar from '../components/Toolbar'
 import TextInputCP2 from '../components/TextInputCP2'
+import { useDispatch, useSelector } from 'react-redux';
+import { APIUpdateUser } from '../api/UserAPI';
 
 const EditAccount = () => {
-    return (
-        <View style={styles.container}>
-            <View>
-                <Toolbar title='Chỉnh sửa thông tin' />
-                <View style={styles.marginLayout}>
-                    <Image source={require('../../assets/image/avt.png')} style={styles.avatar} />
-                    <Text style={styles.labelMassage}>Thông tin sẽ được lưu cho lần mua kế tiếp.
-                        Bấm vào thông tin chi tiết để chỉnh sửa.</Text>
-                    <TextInputCP2 placeholder='John Doe' />
-                    <TextInputCP2 placeholder='exmpale@example.com' />
-                    <TextInputCP2 placeholder='74m/1 HT Quận 12' />
-                    <TextInputCP2 placeholder='0123456789' />
-                </View>
-            </View>
+    const { account } = useSelector(state => state.account);
+    const dispatch = useDispatch();
+    const [name, setName] = useState(account?.username);
+    const [email, setEmail] = useState(account?.email);
+    const [address, setAddress] = useState(account?.address);
+    const [phone, setPhone] = useState(account?.phone);
 
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonLable}>Lưu thông tin</Text>
-            </TouchableOpacity>
-        </View>
+
+    function handleSave() {
+        if (!name || !email || !address || !phone) {
+            alert('Vui lòng nhập đầy đủ thông tin');
+            return;
+        }
+        const body = {
+            id: account._id,
+            data: {
+                username: name,
+                email: email,
+                address: address,
+                phone: phone
+            }
+        };
+        dispatch(APIUpdateUser(body));
+    }
+
+    return (
+        <KeyboardAvoidingView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View>
+                    <Toolbar title='Chỉnh sửa thông tin' />
+                    <View style={styles.marginLayout}>
+                        <Image source={require('../../assets/image/avt.png')} style={styles.avatar} />
+                        <Text style={styles.labelMassage}>Thông tin sẽ được lưu cho lần mua kế tiếp.
+                            Bấm vào thông tin chi tiết để chỉnh sửa.</Text>
+                        <TextInputCP2 placeholder='Họ và tên' value={name} fnOnChange={setName} />
+                        <TextInputCP2 placeholder='Email' value={email} fnOnChange={setEmail} />
+                        <TextInputCP2 placeholder='Địa chỉ' value={address} fnOnChange={setAddress} />
+                        <TextInputCP2 placeholder='Số điện thoại' value={phone} fnOnChange={setPhone} />
+                    </View>
+                </View>
+
+                <TouchableOpacity onPress={handleSave} style={styles.button}>
+                    <Text style={styles.buttonLable}>Lưu thông tin</Text>
+                </TouchableOpacity>
+            </ScrollView>
+
+        </KeyboardAvoidingView>
     )
 }
 
@@ -42,7 +72,7 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     button: {
-        backgroundColor: '#7D7B7B',
+        backgroundColor: '#007537',
         borderRadius: 8,
         padding: 20,
         marginHorizontal: 20,

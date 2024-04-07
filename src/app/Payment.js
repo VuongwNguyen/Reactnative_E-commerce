@@ -1,30 +1,67 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import Toolbar from '../components/Toolbar'
 import TextInputCP2 from '../components/TextInputCP2'
 import { ArrowLeft2 } from 'iconsax-react-native'
+import { useDispatch, useSelector } from 'react-redux';
+import { APICreateOrder } from '../api/OrderAPI';
+import { APIUpdateUser } from '../api/UserAPI'
+
 
 const Payment = props => {
     const { navigation } = props;
+    const dispatch = useDispatch();
+    const { account } = useSelector(state => state.account);
+    const { orderStatus } = useSelector(state => state.order);
+    const [name, setName] = useState(account?.username);
+    const [email, setEmail] = useState(account?.email);
+    const [address, setAddress] = useState(account?.address);
+    const [phone, setPhone] = useState(account?.phone);
     const [isCheckShipping, setisCheckShipping] = useState(0);
     const [isCheckPayment, setisCheckPayment] = useState(0);
+    const total = account?.cart?.reduce((total, item) => total + (item.product_id.price * item.quantity), 0)
+    const costShipping = shipping[isCheckShipping].price;
+    const totalPayment = total + costShipping;
 
+    function formatPrice(price) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    }
+    // lấy mảng mới từ cart của account lấy 2 thuộc tính là product_id và quantity
+    const newCart = account?.cart?.map(item => ({ product_id: item.product_id._id, quantity: item.quantity }));
+    async function handlePayment() {
+        const body = {
+            id: account._id,
+            data: {
+                payment: payment[isCheckPayment].value,
+                address: address,
+                products: newCart,
+                status: 'pending',
+            }
+        }
+        dispatch(APICreateOrder(body));
+        if (await orderStatus === 'success') {
+            dispatch(APIUpdateUser({ id: account._id, data: { cart: [] } }));
+            Alert.alert('Thông báo', 'Đặt hàng thành công');
+        }else{
+            Alert.alert('Thông báo', 'Đặt hàng thất bại');
+        }
+    }
     return (
         <View style={styles.container}>
-            <Toolbar title='Payment' left={<ArrowLeft2 color='black'/> } fnLeft={()=>navigation.goBack()} />
+            <Toolbar title='Payment' left={<ArrowLeft2 color='black' />} fnLeft={() => navigation.goBack()} />
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
                     <Text style={styles.title}>Thông tin khách hàng</Text>
-                    <TextInputCP2 placeholder='Nguyen Van A' />
-                    <TextInputCP2 placeholder='example@example.com' />
-                    <TextInputCP2 placeholder='Địa chỉ' />
-                    <TextInputCP2 placeholder='Số điện thoại' />
+                    <TextInputCP2 placeholder='Họ và tên' value={name} fnOnChange={setName} />
+                    <TextInputCP2 placeholder='Email' value={email} fnOnChange={setEmail} />
+                    <TextInputCP2 placeholder='Địa chỉ' value={address} fnOnChange={setAddress} />
+                    <TextInputCP2 placeholder='Số điện thoại' value={phone} fnOnChange={setPhone} />
                     <Text style={styles.title}>Phương thức vận chuyển</Text>
                     {
                         shipping.map((item, index) => (
                             <TouchableOpacity onPress={() => setisCheckShipping(index)} style={styles.containerShipping} key={index}>
                                 <View>
-                                    <Text style={[styles.shippingLargeLabel, { color: isCheckShipping == index ? '#007537' : '#221F1F' }]}>{item.name} - {item.price}đ</Text>
+                                    <Text style={[styles.shippingLargeLabel, { color: isCheckShipping == index ? '#007537' : '#221F1F' }]}>{item.name} - {formatPrice(item.price)}</Text>
                                     <Text style={styles.shippingSmallLabel}>Dự kiến giao hàng {item.foresee}</Text>
                                 </View>
                                 {isCheckShipping == index && <Image source={require('../../assets/image/check.png')} />}
@@ -49,17 +86,17 @@ const Payment = props => {
             <View style={styles.section}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                     <Text style={styles.labelTotal}>Tạm tính</Text>
-                    <Text style={styles.numberTotal}>100,000đ</Text>
+                    <Text style={styles.numberTotal}>{formatPrice(total)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                     <Text style={styles.labelTotal}>Phí vận chuyển</Text>
-                    <Text style={styles.numberTotal}>10,000đ</Text>
+                    <Text style={styles.numberTotal}>{formatPrice(costShipping)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                     <Text style={styles.labelTotal}>Tổng cộng</Text>
-                    <Text style={styles.numberTotal}>110,000đ</Text>
+                    <Text style={styles.numberTotal}>{formatPrice(totalPayment)}</Text>
                 </View>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity onPress={handlePayment} style={styles.button}>
                     <Text style={styles.textButton}>Đặt hàng</Text>
                 </TouchableOpacity>
             </View>
@@ -162,10 +199,12 @@ const shipping = [
 const payment = [
     {
         id: 1,
-        name: 'Thanh toán khi nhận hàng'
+        name: 'Thanh toán khi nhận hàng',
+        value: 'cash'
     },
     {
         id: 2,
-        name: 'Thanh toán qua thẻ'
+        name: 'Thanh toán qua thẻ',
+        value: 'credit_card'
     }
 ]

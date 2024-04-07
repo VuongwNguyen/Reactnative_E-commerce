@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import { setProduct } from '../redux/ProductSlice';
 import { useDispatch } from 'react-redux';
 
-const ItemSection = props => {
+const ItemSection = memo(props => {
     const { data = [], fn, cateLabel, fnMore } = props;
     const dispatch = useDispatch();
     function RenderItems({ item, index }) {
@@ -49,7 +49,7 @@ const ItemSection = props => {
             </TouchableOpacity>
         </View>
     )
-}
+})
 
 export default ItemSection
 

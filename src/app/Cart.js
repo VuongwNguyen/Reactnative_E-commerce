@@ -8,9 +8,10 @@ import { useSelector } from 'react-redux'
 const Cart = props => {
     const { navigation } = props
     const { account } = useSelector(state => state.account)
-    console.log(account);
     useEffect(() => {
     }, [])
+    const total = account?.cart?.reduce((total, item) => total + (item.product_id.price * item.quantity), 0)
+    const formatPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
     return (
         <View style={styles.container}>
             <Toolbar
@@ -30,7 +31,7 @@ const Cart = props => {
             <View>
                 <View style={styles.lableContainer}>
                     <Text style={styles.lableNameValue}>Tạm tính: </Text>
-                    <Text style={styles.lableValue}>222.333đ</Text>
+                    <Text style={styles.lableValue}>{formatPrice}</Text>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Payment')}>
                     <Text style={styles.buttonLable}>Tiến hành thanh toán</Text>

@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 
-const Toolbar = props => {
+const Toolbar = memo(props => {
     const { left, title, right, fnLeft, fnRight } = props
     return (
         <View style={styles.container}>
@@ -16,7 +16,7 @@ const Toolbar = props => {
             </TouchableOpacity> : <View style={styles.icon} />}
         </View>
     )
-}
+})
 
 export default Toolbar
 

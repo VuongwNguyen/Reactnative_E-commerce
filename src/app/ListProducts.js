@@ -15,7 +15,7 @@ const ListProducts = props => {
 
     useEffect(() => {
         dispatch(APIGetCategories())
-        category ? dispatch(APIGetProductByCategory(category?._id)): dispatch(APIGetProducts())
+        category ? dispatch(APIGetProductByCategory(category?._id)) : dispatch(APIGetProducts())
     }, [category])
 
 

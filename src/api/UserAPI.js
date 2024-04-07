@@ -19,6 +19,15 @@ export const APIRegister = createAsyncThunk("user/register",async (data, { rejec
     }
 });
 
+export const APIUpdateUser = createAsyncThunk("user/updateUser",async (data, { rejectWithValue }) => {
+    try {
+        const response = await AxiosInstance().post(`user/update`, data);
+        return response;
+    } catch (error) {
+        return rejectWithValue(error.response.data);
+    }
+});
+
 export const APIinsertCart = createAsyncThunk("user/cart",async (data, { rejectWithValue }) => {
     try {
         const response = await AxiosInstance().post(`user/insertCart`, data);
@@ -27,6 +36,7 @@ export const APIinsertCart = createAsyncThunk("user/cart",async (data, { rejectW
         return rejectWithValue(error.response.data);
     }
 });
+
 
 
 
