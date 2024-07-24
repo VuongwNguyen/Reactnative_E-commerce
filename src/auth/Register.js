@@ -33,6 +33,7 @@ const Register = props => {
                 if (res.payload.status == true) {
                     // navigation.navigate('Login');
                     setMessage('Đăng Ký Thành Công');
+                    navigation.goBack();
                 } else {
                     setMessage('Email hoặc số điện thoại đã tồn tại');
                     return;

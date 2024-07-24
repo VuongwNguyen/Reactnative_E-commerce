@@ -19,7 +19,7 @@ const Payment = props => {
     const [phone, setPhone] = useState(account?.phone);
     const [isCheckShipping, setisCheckShipping] = useState(0);
     const [isCheckPayment, setisCheckPayment] = useState(0);
-    const total = account?.cart?.reduce((total, item) => total + (item.product_id.price * item.quantity), 0)
+    const total = account?.cart?.reduce((total, item) => total + (item?.product_id?.price * item?.quantity), 0)
     const costShipping = shipping[isCheckShipping].price;
     const totalPayment = total + costShipping;
 
@@ -27,7 +27,7 @@ const Payment = props => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
     }
     // lấy mảng mới từ cart của account lấy 2 thuộc tính là product_id và quantity
-    const newCart = account?.cart?.map(item => ({ product_id: item.product_id._id, quantity: item.quantity }));
+    const newCart = account?.cart?.map(item => ({ product_id: item?.product_id?._id, quantity: item?.quantity }));
     async function handlePayment() {
         const body = {
             id: account._id,
@@ -36,11 +36,13 @@ const Payment = props => {
                 address: address,
                 products: newCart,
                 status: 'pending',
+                total: totalPayment,
+                shipping_fee : costShipping
             }
         }
         dispatch(APICreateOrder(body));
         if (await orderStatus === 'success') {
-            dispatch(APIUpdateUser({ id: account._id, data: { cart: [] } }));
+            dispatch(APIUpdateUser({ id: account?._id, data: { cart: [] } }));
             Alert.alert('Thông báo', 'Đặt hàng thành công');
         }else{
             Alert.alert('Thông báo', 'Đặt hàng thất bại');

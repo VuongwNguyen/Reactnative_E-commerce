@@ -25,8 +25,8 @@ const Account = props => {
           <View style={styles.sectionInfomation}>
             <Image source={require('../../assets/image/avt.png')} style={styles.avatar} />
             <View style={styles.infoLabel}>
-              <Text style={styles.infoName}>{account.username}</Text>
-              <Text style={styles.infoEmail}>{account.email}</Text>
+              <Text style={styles.infoName}>{account?.username}</Text>
+              <Text style={styles.infoEmail}>{account?.email}</Text>
             </View>
           </View>
           <ProfileSection

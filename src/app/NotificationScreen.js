@@ -43,6 +43,7 @@ const Notification = () => {
       <Toolbar title="Thông Báo" />
       <FlatList
         data={orders}
+        showsVerticalScrollIndicator={false}
         style={styles.section}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => renderItem(item)} />

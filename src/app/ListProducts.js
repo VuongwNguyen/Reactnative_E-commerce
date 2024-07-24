@@ -56,7 +56,8 @@ const ListProducts = props => {
                 left={<ArrowLeft2 color='#000' />}
                 title='Danh sách sản phẩm'
                 fnLeft={() => navigation.goBack()}
-                right={<ShoppingCart color='#000' />} />
+                right={<ShoppingCart color='#000' />}
+                fnRight ={()=>navigation.navigate('Cart')} />
             <View>
                 <FlatList
                     style={styles.flatList}

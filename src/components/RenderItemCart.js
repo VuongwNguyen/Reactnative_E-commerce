@@ -16,8 +16,8 @@ const RenderItemCart = memo(props => {
             <View style={styles.labelContainer}>
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={styles.labelName}>{item.product_id?.name} | </Text>
-                        <Text style={styles.labelAttribute}>{item.product_id?.category_id?.name}</Text>
+                        <Text numberOfLines={1} style={styles.labelName}>{item.product_id?.name} </Text>
+                        <Text style={styles.labelAttribute}> |{item.product_id?.category_id?.name}</Text>
                     </View>
                     <Text style={styles.labelPrice}>{formatPrice}</Text>
                 </View>
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontStyle: 'normal',
         fontWeight: '500',
-        lineHeight: 22
+        lineHeight: 22,
+        width:'70%'
     },
     labelContainer: {
         justifyContent: 'space-between',

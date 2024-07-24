@@ -10,7 +10,7 @@ const Cart = props => {
     const { account } = useSelector(state => state.account)
     useEffect(() => {
     }, [])
-    const total = account?.cart?.reduce((total, item) => total + (item.product_id.price * item.quantity), 0)
+    const total = account?.cart?.reduce((total, item) => total + (item?.product_id?.price * item?.quantity), 0)
     const formatPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
     return (
         <View style={styles.container}>
@@ -25,7 +25,7 @@ const Cart = props => {
                 <FlatList
                     data={account?.cart}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item.product_id?._id}
+                    keyExtractor={item => item.product_id?._id.toString()}
                     renderItem={({ item }) => <RenderItemCart item={item} />} />
             </View>
             <View>

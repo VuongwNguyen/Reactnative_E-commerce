@@ -16,15 +16,15 @@ const Details = props => {
 
   useEffect(() => {
     // trả mang mới từ mảng cũ với 2 tham số là product_id và quantity
-    setCar(account?.cart?.map(item => ({ product_id: item.product_id._id, quantity: item.quantity })))
+    setCar(account?.cart?.map(item => ({ product_id: item.product_id?._id, quantity: item.quantity })))
   }, [account])
 
 
   function addToCart() {
-    const updatedCart = cart.map(item => item.product_id === product._id
+    const updatedCart = cart?.map(item => item.product_id === product?._id
       ? { ...item, quantity: item.quantity + quantity } : item); // nếu product_id trùng với product_id thì cập nhật quantity
 
-    const productExists = cart.some(item => item.product_id === product._id);// kiểm tra xem product_id đã tồn tại trong cart chưa
+    const productExists = cart?.some(item => item.product_id === product?._id);// kiểm tra xem product_id đã tồn tại trong cart chưa
     const finalCart = productExists ? updatedCart : [...updatedCart, { product_id: product._id, quantity: quantity }];
     // nếu productExists = true thì trả về updatedCart ngược lại thì trả về updatedCart và newProduct
     // tất cả các code trên b trên 1 dòng
